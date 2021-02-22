@@ -259,6 +259,11 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
   Blockly.Events.setGroup(false);
 };
 
+Blockly.BlockDragger.prototype.updateStartXY = function(deltaX, deltaY) {
+  this.startXY_.x += deltaX;
+  this.startXY_.y += deltaY;
+}
+
 /**
  * Fire a UI event at the end of a block drag.
  * @private

@@ -91,9 +91,15 @@ Blockly.BlockDragSurfaceSvg.prototype.createDom = function() {
         'version': '1.1',
         'class': 'blocklyBlockDragSurface'
       }, this.container_);
+  this.SVG_.setAttribute('style', 'background:skyblue;opacity:0.4;');
+  Blockly.bindEventWithChecks_(this.SVG_, 'wheel', this, this.onMouseWheel_);
   this.dragGroup_ = Blockly.utils.dom.createSvgElement(
       Blockly.utils.Svg.G, {}, this.SVG_);
 };
+
+Blockly.BlockDragSurfaceSvg.prototype.onMouseWheel_ = function(e) {
+  Blockly.mainWorkspace.onMouseWheel_(e);
+}
 
 /**
  * Set the SVG blocks on the drag surface's group and show the surface.
@@ -168,6 +174,12 @@ Blockly.BlockDragSurfaceSvg.prototype.getSurfaceTranslation = function() {
   var xy = Blockly.utils.getRelativeXY(/** @type {!SVGElement} */ (this.SVG_));
   return new Blockly.utils.Coordinate(xy.x / this.scale_, xy.y / this.scale_);
 };
+
+Blockly.BlockDragSurfaceSvg.prototype.translateBy = function(deltaX, deltaY) {
+  var x = this.surfaceXY_.x + deltaX;
+  var y = this.surfaceXY_.y + deltaY;
+  this.translateSurface(x, y);
+}
 
 /**
  * Provide a reference to the drag group (primarily for
