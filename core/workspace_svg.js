@@ -1686,9 +1686,10 @@ Blockly.WorkspaceSvg.prototype.onMouseWheel_ = function(e) {
   var deltaX = newCoord.x.toFixed() - oldX;
   var deltaY = newCoord.y.toFixed() - oldY;
   
-  
-  this.blockDragSurface_.translateBy(-deltaX, -deltaY);
-  this.currentGesture_.blockDragger_.updateStartXY(-deltaX, -deltaY);
+  if (Blockly.Gesture.inProgress() && this.blockDragSurface_.getCurrentBlock()) {
+    this.blockDragSurface_.translateBy(-deltaX, -deltaY);
+    this.currentGesture_.blockDragger_.updateStartXY(-deltaX, -deltaY);
+  }
   e.preventDefault();
 };
 
