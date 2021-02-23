@@ -203,6 +203,18 @@ Blockly.BlockDragger.prototype.fireDragStartEvent_ = function() {
 Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
   var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
   var newLoc = Blockly.utils.Coordinate.sum(this.startXY_, delta);
+  
+  // Probably the wrong place for this logic
+  newLoc.x += this.workspace_.scrollX;
+  newLoc.y += this.workspace_.scrollY;
+  
+  // Definitely the wrong place for this logic
+  var toolboxMetrics = this.workspace_.getMetricsManager().getToolboxMetrics();
+  if (toolboxMetrics.position == Blockly.TOOLBOX_AT_LEFT) {
+    newLoc.x += toolboxMetrics.width;
+  } else if (toolboxMetrics.position == Blockly.TOOLBOX_AT_TOP) {
+    newLoc.y += toolboxMetrics.height;
+  }
 
   this.draggingBlock_.moveDuringDrag(newLoc);
   this.dragIcons_(delta);

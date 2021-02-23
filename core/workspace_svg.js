@@ -1179,10 +1179,6 @@ Blockly.WorkspaceSvg.prototype.translate = function(x, y) {
     this.svgBlockCanvas_.setAttribute('transform', translation);
     this.svgBubbleCanvas_.setAttribute('transform', translation);
   }
-  // Now update the block drag surface if we're using one.
-  if (this.blockDragSurface_) {
-    this.blockDragSurface_.translateAndScaleGroup(x, y, this.scale);
-  }
   // And update the grid if we're using one.
   if (this.grid_) {
     this.grid_.moveTo(x, y);
