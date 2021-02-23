@@ -79,6 +79,8 @@ Blockly.BlockDragger = function(block, workspace) {
    */
   this.startXY_ = this.draggingBlock_.getRelativeToSurfaceXY();
 
+  this.scrollStart_ = null;
+
   /**
    * A list of all of the icons (comment, warning, and mutator) that are
    * on this block and its descendants.  Moving an icon moves the bubble that
@@ -142,6 +144,8 @@ Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY,
     Blockly.Events.setGroup(true);
   }
   this.fireDragStartEvent_();
+  
+  this.scrollStart_ = new Blockly.utils.Coordinate(this.workspace_.scrollX, this.workspace_.scrollY);
 
   // Mutators don't have the same type of z-ordering as the normal workspace
   // during a drag.  They have to rely on the order of the blocks in the SVG.
@@ -205,8 +209,8 @@ Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
   var newLoc = Blockly.utils.Coordinate.sum(this.startXY_, delta);
   
   // Probably the wrong place for this logic
-  newLoc.x += this.workspace_.scrollX;
-  newLoc.y += this.workspace_.scrollY;
+  newLoc.x += this.scrollStart_.x;
+  newLoc.y += this.scrollStart_.y;
   
   // Definitely the wrong place for this logic
   var toolboxMetrics = this.workspace_.getMetricsManager().getToolboxMetrics();
@@ -244,6 +248,11 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
 
   var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
   var newLoc = Blockly.utils.Coordinate.sum(this.startXY_, delta);
+  
+  var scrollEnd = new Blockly.utils.Coordinate(this.workspace_.scrollX, this.workspace_.scrollY);
+  var scrollDelta = new Blockly.utils.Coordinate.difference(this.scrollStart_, scrollEnd);
+  newLoc = Blockly.utils.Coordinate.sum(newLoc, scrollDelta);
+  
   this.draggingBlock_.moveOffDragSurface(newLoc);
 
   var deleted = this.maybeDeleteBlock_();
