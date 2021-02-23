@@ -1662,12 +1662,6 @@ Blockly.WorkspaceSvg.prototype.isMovable = function() {
  * @private
  */
 Blockly.WorkspaceSvg.prototype.onMouseWheel_ = function(e) {
-  // Don't scroll or zoom anything if drag is in progress.
-  if (Blockly.Gesture.inProgress()) {
-    e.preventDefault();
-    e.stopPropagation();
-    return;
-  }
   var canWheelZoom = this.options.zoomOptions && this.options.zoomOptions.wheel;
   var canWheelMove = this.options.moveOptions && this.options.moveOptions.wheel;
   if (!canWheelZoom && !canWheelMove) {

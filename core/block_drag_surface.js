@@ -84,7 +84,12 @@ Blockly.BlockDragSurfaceSvg.prototype.createDom = function() {
         'class': 'blocklyBlockDragSurface'
       }, this.container_);
   this.SVG_.setAttribute('style', 'background:skyblue;opacity:0.4;');
+  Blockly.bindEventWithChecks_(this.SVG_, 'wheel', this, this.onMouseWheel_);
 };
+
+Blockly.BlockDragSurfaceSvg.prototype.onMouseWheel_ = function(e) {
+  Blockly.getMainWorkspace().onMouseWheel_(e);
+}
 
 /**
  * Set the SVG blocks on the drag surface's group and show the surface.
