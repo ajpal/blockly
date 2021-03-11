@@ -95,9 +95,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "style": "text_blocks",
     "helpUrl": "%{BKY_TEXT_JOIN_HELPURL}",
     "tooltip": "%{BKY_TEXT_JOIN_TOOLTIP}",
-    "extensions":[
-      "jit_connection"
-    ]
+    "mutator": "jit_connection_mutator"
   },
   {
     "type": "text_append",
@@ -769,12 +767,29 @@ Blockly.Extensions.register('text_indexOf_tooltip',
 
 Blockly.Extensions.register('text_quotes',
     Blockly.Constants.Text.TEXT_QUOTES_EXTENSION);
-
-Blockly.Extensions.register("jit_connection", function() {
+    
+var textJoinMutator = {
   
-  this.inputCounter = 2;
+  domToMutation: function(xmlElement) {
+    const targetCount = parseInt(xmlElement.getAttribute('items'), 10);
+    console.log(this.inputList);
+    for (var i = 2; i < targetCount; i++) {
+      this.appendValueInput('ADD' + (this.inputCounter++));
+    }
+    this.itemCount_ = targetCount;
+  },
   
-  this.finalizeConnections = function() {
+  mutationToDom: function() {
+    const container = Blockly.utils.xml.createElement('mutation');
+    container.setAttribute('items', this.itemCount_);
+    return container;
+  },
+  
+  itemCount_: 0,
+  
+  inputCounter: 2,
+  
+  finalizeConnections: function() {
     if (this.inputList.length > 2) {
       var toRemove = [];
       for (var i = 0; i < this.inputList.length; i++) {
@@ -796,9 +811,11 @@ Blockly.Extensions.register("jit_connection", function() {
         this.inputList[0].appendField(Blockly.Msg['TEXT_JOIN_TITLE_CREATEWITH']);
       }
     }
-  };
+    
+    this.itemCount_ = this.inputList.length;
+  },
   
-  this.onPendingConnection = function(connection) {
+  onPendingConnection: function(connection) {
     if (connection.targetConnection) {
       var isLastConnection = this.inputList[this.inputList.length - 1].connection == connection;
       if (isLastConnection) {
@@ -818,8 +835,10 @@ Blockly.Extensions.register("jit_connection", function() {
         }
       }
     }
-  };
-});
+  }
+}
+
+Blockly.Extensions.registerMutator("jit_connection_mutator", textJoinMutator);
 
 Blockly.Extensions.registerMutator('text_charAt_mutator',
     Blockly.Constants.Text.TEXT_CHARAT_MUTATOR_MIXIN,
