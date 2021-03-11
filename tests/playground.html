@@ -87,7 +87,6 @@ function start() {
   var toolbox = getToolboxElement();
   setToolboxDropdown();
   match = location.search.match(/side=([^&]+)/);
-  var autoimport = !!location.search.match(/autoimport=([^&]+)/);
   // Create main workspace.
   workspace = Blockly.inject('blocklyDiv',
       {
@@ -145,9 +144,7 @@ function start() {
     logEvents(false);
   }
   taChange();
-  if (autoimport) {
-    fromXml();
-  }
+  fromXml();
 }
 
 function setBackgroundColour() {
@@ -211,12 +208,16 @@ function toXml() {
 
 function fromXml() {
   var input = document.getElementById('importExport');
-  if (!input.value) {
+  if (input.value) {
+    var xml = Blockly.Xml.textToDom(input.value);
+    Blockly.Xml.domToWorkspace(xml, workspace);
     return;
   }
-  var xml = Blockly.Xml.textToDom(input.value);
-  Blockly.Xml.domToWorkspace(xml, workspace);
-  taChange();
+  
+  var startBlocksXml = document.getElementById('startBlocks');
+  if (startBlocksXml) {
+    Blockly.Xml.domToWorkspace(startBlocksXml, workspace);
+  }
 }
 
 function toCode(lang) {
@@ -490,7 +491,7 @@ var spaghettiXml = [
   See https://developers.google.com/blockly/guides/create-custom-blocks/variables#untyped_variable_blocks for more information. -->
   <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox-categories" style="display: none">
     <category name="Logic" categorystyle="logic_category">
-      <block type="controls_if"></block>
+      <block type="controls_ifelse"></block>
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
       <block type="logic_negate"></block>
@@ -1167,6 +1168,23 @@ var spaghettiXml = [
     <sep></sep>
     <category name="Variables" categorystyle="variable_category" custom="VARIABLE_DYNAMIC"></category>
     <category name="Functions" categorystyle="procedure_category" custom="PROCEDURE"></category>
+  </xml>
+  
+  <xml id="startBlocks">
+    <block type="controls_ifelse" id="D$fIUV7]%~uTsxiDQ}*t" x="63" y="38"></block>
+    <block type="logic_compare" id=":0;-mnGr)Xg}nicu{t|I" x="212" y="88">
+      <field name="OP">EQ</field>
+    </block>
+    <block type="text_print" id="$QACm1/FG-|_w96U|+/b" x="162" y="163">
+      <value name="TEXT">
+        <shadow type="text" id="/dt6r:n@UKoe)OA~uI9s">
+          <field name="TEXT">TEST</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="controls_if" id="a@yun/R?TQ//m6^#@;mc" x="87" y="212">
+      <mutation elseif="1"></mutation>
+    </block>
   </xml>
 </body>
 </html>
