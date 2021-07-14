@@ -425,6 +425,7 @@ Blockly.FieldVariable.dropdownCreate = function() {
         ]
     );
   }
+  options.push([Blockly.Msg['NEW_VARIABLE'], Blockly.CREATE_VARIABLE_ID]);
 
   return options;
 };
@@ -449,6 +450,15 @@ Blockly.FieldVariable.prototype.onItemSelected_ = function(menu, menuItem) {
     } else if (id == Blockly.DELETE_VARIABLE_ID) {
       // Delete variable.
       this.sourceBlock_.workspace.deleteVariableById(this.variable_.getId());
+      return;
+    } else if (id == Blockly.CREATE_VARIABLE_ID) {
+      Blockly.Variables.createVariableButtonHandler(
+        this.sourceBlock_.workspace,
+        function(varName) {
+          var variable = this.sourceBlock_.workspace.getVariable(varName);
+          this.setValue(variable.id_);
+        }.bind(this)
+      );
       return;
     }
   }
